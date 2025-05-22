@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassPDF - PDF Sharing and Annotation Tool</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">ClassPDF</div>
+        <nav>
+            <ul>
+                <li><a href="#" id="teacher-login">Teacher Login</a></li>
+                <li><a href="#" id="student-login">Student Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Welcome to ClassPDF</h1>
+            <p>A platform for teachers to share PDF materials with students and for students to complete assignments digitally.</p>
+            <div class="cta-buttons">
+                <button id="btn-teacher">I'm a Teacher</button>
+                <button id="btn-student">I'm a Student</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Share PDFs</h3>
+                <p>Teachers can easily upload and share PDF materials with their students.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Digital School Supplies</h3>
+                <p>Students can use virtual pens, highlighters, and more to complete assignments.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Easy Submission</h3>
+                <p>Submit completed work directly to teachers for grading.</p>
+            </div>
+        </section>
+
+        <div id="login-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="login-form-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>ClassPDF &copy; 2023</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 

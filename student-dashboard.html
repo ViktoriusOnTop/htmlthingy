@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - ClassPDF</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="logo">ClassPDF</div>
+        <div class="user-info">
+            <span id="student-name">Loading...</span>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" data-tab="assignments">Assignments</a></li>
+                    <li><a href="#" data-tab="completed">Completed</a></li>
+                    <li><a href="#" data-tab="settings">Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Assignments Tab -->
+            <section id="assignments" class="tab-content active">
+                <h2>Current Assignments</h2>
+                <div class="assignments-list">
+                    <p class="empty-message">No current assignments.</p>
+                </div>
+            </section>
+
+            <!-- Completed Tab -->
+            <section id="completed" class="tab-content">
+                <h2>Completed Assignments</h2>
+                <div class="completed-list">
+                    <p class="empty-message">No completed assignments yet.</p>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings" class="tab-content">
+                <h2>Settings</h2>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="student-profile-name">Full Name</label>
+                        <input type="text" id="student-profile-name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="student-profile-email">Email</label>
+                        <input type="email" id="student-profile-email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="student-profile-grade">Grade</label>
+                        <input type="text" id="student-profile-grade" name="grade">
+                    </div>
+                    <button type="button" class="save-settings-btn">Save Settings</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/pdf.min.js"></script>
+    <script src="js/student-dashboard.js"></script>
+</body>
+</html> 

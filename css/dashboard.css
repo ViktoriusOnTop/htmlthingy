@@ -1,0 +1,342 @@
+/* Dashboard Layout */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: calc(100vh - 70px);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 2rem 0;
+}
+
+.sidebar nav ul {
+    list-style: none;
+}
+
+.sidebar nav ul li {
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 1rem 2rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar nav ul li a.active {
+    background-color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Dashboard Content Styles */
+.dashboard-content {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.dashboard-content h2 {
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+    font-size: 1.8rem;
+}
+
+/* Header User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#logout-btn {
+    background-color: transparent;
+    color: var(--dark-color);
+    border: 1px solid var(--dark-color);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#logout-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* Empty Message */
+.empty-message {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+}
+
+/* Upload Area */
+.upload-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.02);
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.upload-area:hover, .upload-area.highlight {
+    border-color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #2980b9;
+}
+
+.recent-uploads {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.recent-uploads h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+/* Action Bar */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+#create-assignment, #add-student {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#create-assignment:hover, #add-student:hover {
+    background-color: #2980b9;
+}
+
+#student-search {
+    flex-grow: 1;
+    max-width: 400px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+
+/* Assignment Cards */
+.assignment-card, .student-card, .submission-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.assignment-card:hover, .student-card:hover, .submission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.assignment-details, .student-details, .submission-details {
+    flex-grow: 1;
+}
+
+.assignment-title, .student-name, .submission-title {
+    font-weight: bold;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.assignment-metadata, .student-metadata, .submission-metadata {
+    display: flex;
+    gap: 1.5rem;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.assignment-actions, .student-actions, .submission-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn, .edit-btn, .grade-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-btn {
+    background-color: var(--accent-color);
+}
+
+/* PDF Viewer */
+.pdf-viewer {
+    width: 100%;
+    height: 800px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+}
+
+/* Tool Panel for PDF Annotation */
+.tool-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.tool {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s;
+}
+
+.tool:hover, .tool.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Color Picker */
+.color-picker {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.color-option {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.color-option:hover, .color-option.active {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+}
+
+/* Form Styles */
+.settings-form {
+    max-width: 600px;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.save-settings-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+.save-settings-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .dashboard-container {
+        grid-template-columns: 200px 1fr;
+    }
+    
+    .upload-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+} 

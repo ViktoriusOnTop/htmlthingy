@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Viewer - ClassPDF</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* Additional Styles for Assignment Viewer */
+        .assignment-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 1rem;
+        }
+        
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .pdf-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+        }
+        
+        .tools-container {
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .canvas-container {
+            position: relative;
+            overflow: auto;
+            height: 100%;
+        }
+        
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .annotation-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: all;
+        }
+        
+        .pdf-toolbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .pdf-toolbar button {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .tools-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tool-label {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="assignment-container">
+        <div class="assignment-header">
+            <div>
+                <h1 id="assignment-title">Loading Assignment...</h1>
+                <p id="assignment-description"></p>
+            </div>
+            <div>
+                <button id="back-btn" class="submit-btn" style="background-color: #666;">Back to Dashboard</button>
+            </div>
+        </div>
+        
+        <div class="tools-container">
+            <div class="tool-group">
+                <span class="tool-label">Tools:</span>
+                <div class="tool pen active" data-tool="pen" title="Pen">✏️</div>
+                <div class="tool highlighter" data-tool="highlighter" title="Highlighter">🖌️</div>
+                <div class="tool eraser" data-tool="eraser" title="Eraser">🧽</div>
+                <div class="tool text" data-tool="text" title="Text">T</div>
+            </div>
+            
+            <div class="tool-group">
+                <span class="tool-label">Colors:</span>
+                <div class="color-option active" style="background-color: #000000;" data-color="#000000"></div>
+                <div class="color-option" style="background-color: #ff0000;" data-color="#ff0000"></div>
+                <div class="color-option" style="background-color: #0000ff;" data-color="#0000ff"></div>
+                <div class="color-option" style="background-color: #00ff00;" data-color="#00ff00"></div>
+                <div class="color-option" style="background-color: #ffff00;" data-color="#ffff00"></div>
+            </div>
+            
+            <div class="tool-group">
+                <span class="tool-label">Line Width:</span>
+                <input type="range" id="line-width" min="1" max="20" value="2">
+                <span id="width-value">2</span>px
+            </div>
+        </div>
+        
+        <div class="pdf-container" id="pdf-viewer"></div>
+        
+        <div class="action-buttons">
+            <button id="save-btn" class="submit-btn" style="background-color: var(--secondary-color);">Save Progress</button>
+            <button id="submit-btn" class="submit-btn">Submit Assignment</button>
+        </div>
+    </div>
+
+    <script src="js/pdf-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in as a student
+            const userType = localStorage.getItem('userType');
+            const username = localStorage.getItem('username');
+            
+            if (!userType || userType !== 'student' || !username) {
+                // Redirect to login if not logged in as a student
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Get assignment ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('id');
+            
+            if (!assignmentId) {
+                alert('No assignment specified');
+                window.location.href = 'student-dashboard.html';
+                return;
+            }
+            
+            // Load assignment details
+            loadAssignment(assignmentId);
+            
+            // Back button functionality
+            document.getElementById('back-btn').addEventListener('click', () => {
+                window.location.href = 'student-dashboard.html';
+            });
+            
+            // Tool selection
+            const tools = document.querySelectorAll('.tool');
+            tools.forEach(tool => {
+                tool.addEventListener('click', () => {
+                    tools.forEach(t => t.classList.remove('active'));
+                    tool.classList.add('active');
+                    
+                    // Set the current tool in the PDF viewer
+                    if (window.pdfViewer) {
+                        const toolType = tool.getAttribute('data-tool');
+                        const activeColor = document.querySelector('.color-option.active').getAttribute('data-color');
+                        window.pdfViewer.setTool(toolType, activeColor);
+                    }
+                });
+            });
+            
+            // Color selection
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    colorOptions.forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    
+                    // Update the current tool in the PDF viewer
+                    if (window.pdfViewer) {
+                        const activeTool = document.querySelector('.tool.active').getAttribute('data-tool');
+                        const color = option.getAttribute('data-color');
+                        window.pdfViewer.setTool(activeTool, color);
+                    }
+                });
+            });
+            
+            // Line width adjustment
+            const lineWidthInput = document.getElementById('line-width');
+            const widthValue = document.getElementById('width-value');
+            
+            lineWidthInput.addEventListener('input', () => {
+                widthValue.textContent = lineWidthInput.value;
+                
+                // Update line width in the PDF viewer
+                // This would need to be implemented in a real app
+            });
+            
+            // Save button functionality
+            document.getElementById('save-btn').addEventListener('click', () => {
+                saveProgress(assignmentId);
+            });
+            
+            // Submit button functionality
+            document.getElementById('submit-btn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to submit this assignment? You won\'t be able to make further changes.')) {
+                    submitAssignment(assignmentId);
+                }
+            });
+        });
+        
+        /**
+         * Load assignment details and PDF
+         */
+        function loadAssignment(assignmentId) {
+            // Get assignment details
+            const assignments = JSON.parse(localStorage.getItem('teacherAssignments') || '[]');
+            const assignment = assignments.find(a => a.id === assignmentId);
+            
+            if (!assignment) {
+                alert('Assignment not found');
+                window.location.href = 'student-dashboard.html';
+                return;
+            }
+            
+            // Set assignment details in the UI
+            document.getElementById('assignment-title').textContent = assignment.title;
+            document.getElementById('assignment-description').textContent = assignment.description || '';
+            
+            // Get PDF details
+            const uploads = JSON.parse(localStorage.getItem('teacherUploads') || '[]');
+            const pdf = uploads.find(u => u.id === assignment.pdfId);
+            
+            if (!pdf || !pdf.url) {
+                alert('PDF not found');
+                window.location.href = 'student-dashboard.html';
+                return;
+            }
+            
+            // Check if there's an existing submission for this assignment
+            const submissions = JSON.parse(localStorage.getItem('studentSubmissions') || '[]');
+            let submission = submissions.find(sub => sub.assignmentId === assignmentId);
+            
+            // If no submission exists, create one
+            if (!submission) {
+                submission = {
+                    id: Date.now().toString(),
+                    assignmentId: assignmentId,
+                    studentName: localStorage.getItem('username'),
+                    startedAt: new Date().toISOString(),
+                    status: 'in_progress',
+                    annotations: []
+                };
+                submissions.push(submission);
+                localStorage.setItem('studentSubmissions', JSON.stringify(submissions));
+            }
+            
+            // Initialize PDF viewer
+            const pdfViewer = new PDFViewer('pdf-viewer', true);
+            window.pdfViewer = pdfViewer;
+            
+            // Load PDF
+            pdfViewer.loadPDF(pdf.url);
+            
+            // Load existing annotations if any
+            if (submission.annotations && submission.annotations.length > 0) {
+                pdfViewer.setAnnotations(submission.annotations);
+            }
+        }
+        
+        /**
+         * Save progress
+         */
+        function saveProgress(assignmentId) {
+            if (!window.pdfViewer) return;
+            
+            // Get annotations from the PDF viewer
+            const annotations = window.pdfViewer.getAnnotations();
+            
+            // Update submission
+            const submissions = JSON.parse(localStorage.getItem('studentSubmissions') || '[]');
+            const submission = submissions.find(sub => sub.assignmentId === assignmentId);
+            
+            if (submission) {
+                submission.annotations = annotations;
+                submission.lastSaved = new Date().toISOString();
+                
+                localStorage.setItem('studentSubmissions', JSON.stringify(submissions));
+                alert('Progress saved successfully!');
+            }
+        }
+        
+        /**
+         * Submit assignment
+         */
+        function submitAssignment(assignmentId) {
+            // Save progress first
+            saveProgress(assignmentId);
+            
+            // Update submission status
+            const submissions = JSON.parse(localStorage.getItem('studentSubmissions') || '[]');
+            const submission = submissions.find(sub => sub.assignmentId === assignmentId);
+            
+            if (submission) {
+                submission.status = 'submitted';
+                submission.submittedAt = new Date().toISOString();
+                
+                localStorage.setItem('studentSubmissions', JSON.stringify(submissions));
+                
+                alert('Assignment submitted successfully!');
+                window.location.href = 'student-dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html> 
